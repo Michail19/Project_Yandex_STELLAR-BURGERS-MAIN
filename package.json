@@ -87,6 +87,7 @@
   },
   "scripts": {
     "start": "webpack serve --mode=development",
+    "run": "node node_modules/webpack/bin/webpack.js serve --mode=development",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src",
