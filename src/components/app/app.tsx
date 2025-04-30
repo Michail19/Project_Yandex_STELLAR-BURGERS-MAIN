@@ -42,7 +42,7 @@ const App = () => {
         <Route path='/feed/:number' element={<OrderInfo />} />
         <Route path='/ingredients/:id' element={<IngredientDetails />} />
 
-        {/* Защищённые маршруты для неавторизованных пользователей */}
+        {/* Защищённые маршруты */}
         <Route
           path='/login'
           element={
@@ -75,8 +75,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
-        {/* Защищённые маршруты для авторизованных пользователей */}
         <Route
           path='/profile'
           element={
@@ -102,7 +100,7 @@ const App = () => {
           }
         />
 
-        {/* Маршрут для 404 */}
+        {/* 404 */}
         <Route path='*' element={<NotFound404 />} />
       </Routes>
 
