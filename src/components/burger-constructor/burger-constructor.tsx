@@ -1,13 +1,14 @@
 import { FC, useMemo } from 'react';
-import { TConstructorIngredient } from '@utils-types';
+import { TConstructorIngredient, TIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 
 export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
-  const constructorItems = {
-    bun: {
-      price: 0
-    },
+  const constructorItems: {
+    bun: TIngredient | null;
+    ingredients: TConstructorIngredient[];
+  } = {
+    bun: null,
     ingredients: []
   };
 
