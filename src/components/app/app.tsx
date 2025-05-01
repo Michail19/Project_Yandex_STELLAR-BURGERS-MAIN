@@ -105,34 +105,34 @@ const App = () => {
       </Routes>
 
       {/* Модальные окна */}
-      {background && (
-        <Routes>
-          <Route
-            path='/feed/:number'
-            element={
-              <Modal title='Детали заказа' onClose={handleModalClose}>
-                <OrderInfo />
-              </Modal>
-            }
-          />
-          <Route
-            path='/ingredients/:id'
-            element={
-              <Modal title='Детали ингредиента' onClose={handleModalClose}>
-                <IngredientDetails />
-              </Modal>
-            }
-          />
-          <Route
-            path='/profile/orders/:number'
-            element={
-              <Modal title='Детали заказа' onClose={handleModalClose}>
-                <OrderInfo />
-              </Modal>
-            }
-          />
-        </Routes>
-      )}
+      {/*{background && (*/}
+      {/*  <Routes>*/}
+      {/*    <Route*/}
+      {/*      path='/feed/:number'*/}
+      {/*      element={*/}
+      {/*        <Modal title='Детали заказа' onClose={handleModalClose}>*/}
+      {/*          <OrderInfo />*/}
+      {/*        </Modal>*/}
+      {/*      }*/}
+      {/*    />*/}
+      {/*    <Route*/}
+      {/*      path='/ingredients/:id'*/}
+      {/*      element={*/}
+      {/*        <Modal title='Детали ингредиента' onClose={handleModalClose}>*/}
+      {/*          <IngredientDetails />*/}
+      {/*        </Modal>*/}
+      {/*      }*/}
+      {/*    />*/}
+      {/*    <Route*/}
+      {/*      path='/profile/orders/:number'*/}
+      {/*      element={*/}
+      {/*        <Modal title='Детали заказа' onClose={handleModalClose}>*/}
+      {/*          <OrderInfo />*/}
+      {/*        </Modal>*/}
+      {/*      }*/}
+      {/*    />*/}
+      {/*  </Routes>*/}
+      {/*)}*/}
     </div>
   );
 };
