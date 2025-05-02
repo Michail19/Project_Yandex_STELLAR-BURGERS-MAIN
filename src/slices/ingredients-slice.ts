@@ -44,6 +44,7 @@ const ingredientsSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchIngredients.fulfilled, (state, action) => {
+        console.log(state);
         state.isLoading = false;
         state.items = action.payload;
         state.buns = action.payload.filter((item) => item.type === 'bun');

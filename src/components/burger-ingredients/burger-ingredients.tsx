@@ -2,17 +2,19 @@ import { useState, useRef, useEffect, FC } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import { TIngredient, TTabMode } from '@utils-types';
-import { BurgerIngredientsUI } from '../ui/burger-ingredients';
-import { useSelector } from '../../services/store';
+import { BurgerIngredientsUI } from '@ui';
+import { useSelector, useDispatch } from '../../services/store';
 import {
   selectIngredients,
   selectBuns,
   selectMains,
-  selectSauces
+  selectSauces,
+  fetchIngredients
 } from '../../slices/ingredients-slice';
 
 export const BurgerIngredients: FC = () => {
   /** TODO: взять переменные из стора */
+  const dispatch = useDispatch();
   const buns = useSelector(selectBuns);
   const mains = useSelector(selectMains);
   const sauces = useSelector(selectSauces);
@@ -21,6 +23,10 @@ export const BurgerIngredients: FC = () => {
   const titleBunRef = useRef<HTMLHeadingElement>(null);
   const titleMainRef = useRef<HTMLHeadingElement>(null);
   const titleSaucesRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    dispatch(fetchIngredients());
+  }, [dispatch]);
 
   const [bunsRef, inViewBuns] = useInView({
     threshold: 0
