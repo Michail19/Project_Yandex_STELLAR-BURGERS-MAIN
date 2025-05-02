@@ -57,17 +57,13 @@ const ingredientsSlice = createSlice({
   }
 });
 
-export const selectIngredients = (state: { ingredients: IIngredientsState }) =>
-  state.ingredients.items;
+export const selectIngredients = (state: RootState) => state.ingredients.items;
 
-export const selectBuns = (state: { ingredients: IIngredientsState }) =>
-  state.ingredients.buns;
-export const selectMains = (state: { ingredients: IIngredientsState }) =>
-  state.ingredients.mains;
-export const selectSauces = (state: { ingredients: IIngredientsState }) =>
-  state.ingredients.sauces;
+export const selectBuns = (state: RootState) => state.ingredients.buns;
+export const selectMains = (state: RootState) => state.ingredients.mains;
+export const selectSauces = (state: RootState) => state.ingredients.sauces;
 
-export const selectIsLoading = (state: { ingredients: IIngredientsState }) =>
+export const selectIsLoading = (state: RootState) =>
   state.ingredients.isLoading;
 
 export default ingredientsSlice.reducer;

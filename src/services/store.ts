@@ -7,16 +7,16 @@ import {
   useSelector as selectorHook
 } from 'react-redux';
 
-const rootReducer = () => ({
+const rootReducer = {
   ingredients: ingredientsReducer
-}); // Заменить на импорт настоящего редьюсера
+}; // Заменить на импорт настоящего редьюсера
 
 const store = configureStore({
   reducer: rootReducer,
   devTools: process.env.NODE_ENV !== 'production'
 });
 
-export type RootState = ReturnType<typeof rootReducer>;
+export type RootState = ReturnType<typeof store.getState>;
 
 export type AppDispatch = typeof store.dispatch;
 
