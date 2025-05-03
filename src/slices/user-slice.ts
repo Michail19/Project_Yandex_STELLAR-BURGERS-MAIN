@@ -14,7 +14,7 @@ import {
 } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
 import { setCookie, deleteCookie } from '../utils/cookie';
-import { RootState } from "../services/store";
+import { RootState } from '../services/store';
 
 interface TUserState {
   data: TUser | null;
@@ -109,21 +109,21 @@ const userSlice = createSlice({
           ? (action.payload as SerializedError)
           : action.error;
       })
-      .addCase(login.pending, (state) => {
+      .addCase(loginUser.pending, (state) => {
         state.loginError = undefined;
       })
-      .addCase(login.fulfilled, (state, action) => {
+      .addCase(loginUser.fulfilled, (state, action) => {
         state.loginError = undefined;
         state.isAuthenticated = true;
 
         state.data = action.payload;
       })
-      .addCase(login.rejected, (state, action) => {
+      .addCase(loginUser.rejected, (state, action) => {
         state.loginError = action.meta.rejectedWithValue
           ? (action.payload as SerializedError)
           : action.error;
       })
-      .addCase(logout.fulfilled, (state) => {
+      .addCase(logoutUser.fulfilled, (state) => {
         state.isAuthenticated = false;
 
         state.data = null;

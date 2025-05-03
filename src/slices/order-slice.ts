@@ -113,8 +113,8 @@ export const orderDataSelector = (number: string) => (state: RootState) => {
     if (data) return data;
   }
 
-  if (state.feed.feed?.orders.length) {
-    const data = state.feed.feed?.orders?.find(
+  if (state.feed.items?.orders.length) {
+    const data = state.feed.items?.orders?.find(
       (order) => order.number === Number(number)
     );
     if (data) return data;
