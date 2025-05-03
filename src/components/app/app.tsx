@@ -18,17 +18,19 @@ import {
 } from '@pages';
 import '../../index.css';
 import styles from './app.module.css';
-import { AppHeader, OrderInfo, IngredientDetails, Modal } from '@components';
+import { AppHeader, OrderInfo, IngredientDetails } from '@components';
+import { useSelector } from '../../services/store';
+import { selectAuthChecked } from '../../slices/user-slice';
 
 const App = () => {
   const location = useLocation();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const background = location.state?.background;
 
-  const handleModalClose = () => {
-    // Возвращаемся на предыдущий маршрут
-    navigate(-1);
-  };
+  // const handleModalClose = () => {
+  //   // Возвращаемся на предыдущий маршрут
+  //   navigate(-1);
+  // };
 
   return (
     <div className={styles.app}>
@@ -115,7 +117,7 @@ const ProtectedRoute = ({
   children: JSX.Element;
   anonymous?: boolean;
 }) => {
-  const isAuthenticated = /* ваша логика проверки аутентификации */ false;
+  const isAuthenticated = useSelector(selectAuthChecked);
 
   if (anonymous && isAuthenticated) {
     return <Navigate to='/' replace />;
