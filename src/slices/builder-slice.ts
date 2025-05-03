@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TConstructorIngredient, TIngredient } from '@utils-types';
 import { v4 as uuidv4 } from 'uuid';
+import { RootState } from "../services/store";
 
 interface IBuilderState {
   constructorItems: {
@@ -73,13 +74,11 @@ const builderSlice = createSlice({
   }
 });
 
-export const selectConstructorItems = (state: { builder: IBuilderState }) =>
-  state.builder.constructorItems;
-export const selectBun = (state: { builder: IBuilderState }) =>
-  state.builder.constructorItems.bun;
-export const selectConstructorTotalCount = (state: {
-  builder: IBuilderState;
-}) => state.builder.constructorItems.ingredients.length;
+export const selectConstructorItems = (state: RootState) =>
+  state.constructorItems;
+export const selectBun = (state: RootState) => state.constructorItems.bun;
+export const selectConstructorTotalCount = (state: RootState) =>
+  state.constructorItems.ingredients.length;
 
 export const {
   addBunBuilder,

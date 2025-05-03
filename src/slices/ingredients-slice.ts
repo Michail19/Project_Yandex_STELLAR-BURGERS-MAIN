@@ -59,11 +59,9 @@ const ingredientsSlice = createSlice({
 });
 
 export const selectIngredients = (state: RootState) => state.ingredients.items;
-
 export const selectBuns = (state: RootState) => state.ingredients.buns;
 export const selectMains = (state: RootState) => state.ingredients.mains;
 export const selectSauces = (state: RootState) => state.ingredients.sauces;
-
 export const selectIsLoading = (state: RootState) =>
   state.ingredients.isLoading;
 

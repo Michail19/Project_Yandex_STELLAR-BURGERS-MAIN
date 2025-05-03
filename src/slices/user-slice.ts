@@ -14,6 +14,7 @@ import {
 } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
 import { setCookie, deleteCookie } from '../utils/cookie';
+import { RootState } from "../services/store";
 
 interface TUserState {
   data: TUser | null;
@@ -142,14 +143,12 @@ const userSlice = createSlice({
   }
 });
 
-export const selectIsAuthenticated = (state: { user: TUserState }) =>
+export const selectIsAuthenticated = (state: RootState) =>
   state.user.isAuthenticated;
-export const selectUserData = (state: { user: TUserState }) => state.user.data;
-export const selectAuthChecked = (state: { user: TUserState }) =>
-  state.user.isAuthChecked;
-export const selectLoginError = (state: { user: TUserState }) =>
-  state.user.loginError;
-export const selectRegisterError = (state: { user: TUserState }) =>
+export const selectUserData = (state: RootState) => state.user.data;
+export const selectAuthChecked = (state: RootState) => state.user.isAuthChecked;
+export const selectLoginError = (state: RootState) => state.user.loginError;
+export const selectRegisterError = (state: RootState) =>
   state.user.registerError;
 
 export default userSlice.reducer;
