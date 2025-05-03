@@ -19,18 +19,28 @@ import {
 import '../../index.css';
 import styles from './app.module.css';
 import { AppHeader, OrderInfo, IngredientDetails } from '@components';
-import { useSelector } from '../../services/store';
-import { selectAuthChecked } from '../../slices/user-slice';
+import { useDispatch, useSelector } from '../../services/store';
+import { fetchUser, selectAuthChecked } from '../../slices/user-slice';
+import { useEffect } from 'react';
+import { fetchIngredients } from '../../slices/ingredients-slice';
+import { closeOrderModalData } from '../../slices/order-slice';
 
 const App = () => {
   const location = useLocation();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const background = location.state?.background;
 
-  // const handleModalClose = () => {
-  //   // Возвращаемся на предыдущий маршрут
-  //   navigate(-1);
-  // };
+  useEffect(() => {
+    dispatch(fetchUser());
+    dispatch(fetchIngredients());
+  }, []);
+
+  const handleModalClose = () => {
+    // Возвращаемся на предыдущий маршрут
+    navigate(-1);
+    dispatch(closeOrderModalData());
+  };
 
   return (
     <div className={styles.app}>
