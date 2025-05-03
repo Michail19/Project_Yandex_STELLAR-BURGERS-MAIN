@@ -51,4 +51,5 @@ export const selectLoading = (state: RootState) => state.feed.loading;
 export const selectError = (state: RootState) => state.feed.error;
 export const selectOrders = (state: RootState) => state.feed?.orders || [];
 
-export const feedReducer = feedSlice.reducer;
+// export const feedReducer = feedSlice.reducer;
+export default feedSlice.reducer;
