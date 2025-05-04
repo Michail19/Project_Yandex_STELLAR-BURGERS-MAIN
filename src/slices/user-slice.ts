@@ -46,13 +46,17 @@ export const registerUser = createAsyncThunk<TUser, TRegisterData>(
 export const loginUser = createAsyncThunk<TUser, TLoginData>(
   'user/login',
   async (dataUser, { rejectWithValue }) => {
-    const data = await loginUserApi(dataUser);
-    if (!data?.success) {
-      return rejectWithValue(data);
+    try {
+      const data = await loginUserApi(dataUser);
+      if (!data?.success) {
+        return rejectWithValue(data);
+      }
+      setCookie('accessToken', data.accessToken);
+      localStorage.setItem('refreshToken', data.refreshToken);
+      return data.user;
+    } catch (error) {
+      return rejectWithValue(error);
     }
-    setCookie('accessToken', data.accessToken);
-    localStorage.setItem('refreshToken', data.refreshToken);
-    return data.user;
   }
 );
 

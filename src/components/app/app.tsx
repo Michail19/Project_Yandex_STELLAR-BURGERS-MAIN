@@ -58,7 +58,7 @@ const App = () => {
         <Route
           path='/login'
           element={
-            <ProtectedRoute anonymous>
+            <ProtectedRoute>
               <Login />
             </ProtectedRoute>
           }
@@ -66,7 +66,7 @@ const App = () => {
         <Route
           path='/register'
           element={
-            <ProtectedRoute anonymous>
+            <ProtectedRoute>
               <Register />
             </ProtectedRoute>
           }
@@ -74,7 +74,7 @@ const App = () => {
         <Route
           path='/forgot-password'
           element={
-            <ProtectedRoute anonymous>
+            <ProtectedRoute>
               <ForgotPassword />
             </ProtectedRoute>
           }
@@ -82,7 +82,7 @@ const App = () => {
         <Route
           path='/reset-password'
           element={
-            <ProtectedRoute anonymous>
+            <ProtectedRoute>
               <ResetPassword />
             </ProtectedRoute>
           }
