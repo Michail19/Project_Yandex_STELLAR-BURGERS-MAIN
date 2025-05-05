@@ -1,13 +1,19 @@
 import { Preloader } from '@ui';
 import { FeedUI } from '@ui-pages';
-import { TOrder } from '@utils-types';
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from '../../services/store';
-import { feedThunk, selectOrders } from '../../slices/feed-slice';
+import {
+  feedThunk,
+  selectError,
+  selectLoading,
+  selectOrders
+} from '../../slices/feed-slice';
 
 export const Feed: FC = () => {
   /** TODO: взять переменную из стора */
-  const orders: TOrder[] = useSelector(selectOrders);
+  const orders = useSelector(selectOrders);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -18,9 +24,9 @@ export const Feed: FC = () => {
     dispatch(feedThunk());
   };
 
-  if (!orders.length) {
-    return <Preloader />;
-  }
+  if (loading) return <Preloader />;
+  if (error) return <div>Ошибка: {error.message}</div>;
+  if (!orders.length) return <div>Нет доступных заказов</div>;
 
-  <FeedUI orders={orders} handleGetFeeds={handleGetFeeds} />;
+  return <FeedUI orders={orders} handleGetFeeds={handleGetFeeds} />;
 };

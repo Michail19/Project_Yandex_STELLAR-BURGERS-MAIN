@@ -3,7 +3,8 @@ import { getFeedsApi } from '@api';
 import {
   createSlice,
   createAsyncThunk,
-  SerializedError
+  SerializedError,
+  createSelector
 } from '@reduxjs/toolkit';
 import { RootState } from '../services/store';
 
@@ -49,8 +50,9 @@ export const feedSlice = createSlice({
 export const selectFeed = (state: RootState) => state.feed.items;
 export const selectLoading = (state: RootState) => state.feed.loading;
 export const selectError = (state: RootState) => state.feed.error;
-export const selectOrders = (state: RootState) =>
-  state.feed.items?.orders || [];
+export const selectOrders = createSelector(
+  [selectFeed],
+  (feed) => feed?.orders || []
+);
 
-// export const feedReducer = feedSlice.reducer;
 export default feedSlice.reducer;
