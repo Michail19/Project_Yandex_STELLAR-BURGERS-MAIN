@@ -92,11 +92,14 @@
     "build-storybook": "storybook build",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src",
     "lint:fix": "npm run lint -- --fix",
-    "format": "prettier ./src --write"
+    "format": "prettier ./src --write",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "eslintConfig": {
     "extends": [
       "plugin:storybook/recommended"
     ]
-  }
+  },
+  "homepage": "https://Michail19.github.io/Project_Yandex_STELLAR-BURGERS-MAIN/"
 }
