@@ -13,7 +13,7 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -28,7 +28,7 @@ jobs:
         run: npm run build
         env:
           NODE_ENV: production
-          PUBLIC_URL: /<your-repo-name>/
+          PUBLIC_URL: /Project_Yandex_STELLAR-BURGERS-MAIN/
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
