@@ -20,11 +20,7 @@ import '../../index.css';
 import styles from './app.module.css';
 import { AppHeader, OrderInfo, IngredientDetails, Modal } from '@components';
 import { useDispatch, useSelector } from '../../services/store';
-import {
-  fetchUser,
-  selectAuthChecked,
-  selectIsAuthenticated
-} from '../../slices/user-slice';
+import { fetchUser, selectIsAuthenticated } from '../../slices/user-slice';
 import { useEffect } from 'react';
 import { fetchIngredients } from '../../slices/ingredients-slice';
 import { closeOrderModalData } from '../../slices/order-slice';
@@ -133,7 +129,7 @@ const ProtectedRoute = ({
   children: JSX.Element;
   anonymous?: boolean;
 }) => {
-  const isAuthenticated = useSelector(selectAuthChecked);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
 
   if (anonymous && isAuthenticated) {
     return <Navigate to='/' replace />;

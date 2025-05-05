@@ -18,7 +18,6 @@ import { RootState } from '../services/store';
 
 interface TUserState {
   data: TUser | null;
-  isAuthChecked: boolean;
   isAuthenticated: boolean;
   loginError?: SerializedError;
   registerError?: SerializedError;
@@ -26,7 +25,6 @@ interface TUserState {
 
 export const initialState: TUserState = {
   data: null,
-  isAuthChecked: false,
   isAuthenticated: false
 };
 
@@ -132,12 +130,8 @@ const userSlice = createSlice({
       })
       .addCase(fetchUser.fulfilled, (state, action) => {
         state.isAuthenticated = true;
-        state.isAuthChecked = true;
 
         state.data = action.payload;
-      })
-      .addCase(fetchUser.rejected, (state) => {
-        state.isAuthChecked = true;
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.data = action.payload;
@@ -148,8 +142,6 @@ const userSlice = createSlice({
 export const selectIsAuthenticated = (state: RootState) =>
   state.user.isAuthenticated;
 export const selectUserData = (state: RootState) => state.user.data;
-export const selectAuthChecked = (state: RootState) =>
-  state.user.isAuthenticated;
 export const selectLoginError = (state: RootState) => state.user.loginError;
 export const selectRegisterError = (state: RootState) =>
   state.user.registerError;
