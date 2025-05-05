@@ -25,6 +25,7 @@ export const ProfileUI: FC<ProfileUIProps> = ({
     >
       <>
         <div className='pb-6'>
+          // @ts-ignore
           <Input
             type={'text'}
             placeholder={'Имя'}
@@ -38,6 +39,7 @@ export const ProfileUI: FC<ProfileUIProps> = ({
           />
         </div>
         <div className='pb-6'>
+          // @ts-ignore
           <Input
             type={'email'}
             placeholder={'E-mail'}
@@ -51,6 +53,7 @@ export const ProfileUI: FC<ProfileUIProps> = ({
           />
         </div>
         <div className='pb-6'>
+          // @ts-ignore
           <Input
             type={'password'}
             placeholder={'Пароль'}

@@ -28,6 +28,7 @@ export const RegisterUI: FC<RegisterUIProps> = ({
       >
         <>
           <div className='pb-6'>
+            // @ts-ignore
             <Input
               type='text'
               placeholder='Имя'
@@ -40,6 +41,7 @@ export const RegisterUI: FC<RegisterUIProps> = ({
             />
           </div>
           <div className='pb-6'>
+            // @ts-ignore
             <Input
               type='email'
               placeholder='E-mail'

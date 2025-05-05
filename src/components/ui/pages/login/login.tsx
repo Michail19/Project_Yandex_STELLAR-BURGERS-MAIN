@@ -26,6 +26,7 @@ export const LoginUI: FC<LoginUIProps> = ({
       >
         <>
           <div className='pb-6'>
+            // @ts-ignore
             <Input
               type='email'
               placeholder='E-mail'

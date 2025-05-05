@@ -32,6 +32,7 @@ export const ResetPasswordUI: FC<ResetPasswordUIProps> = ({
           />
         </div>
         <div className='pb-6'>
+          // @ts-ignore
           <Input
             type='text'
             placeholder='Введите код из письма'

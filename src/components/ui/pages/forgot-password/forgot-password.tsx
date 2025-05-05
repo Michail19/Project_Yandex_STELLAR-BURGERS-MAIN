@@ -20,6 +20,7 @@ export const ForgotPasswordUI: FC<PageUIProps> = ({
         onSubmit={handleSubmit}
       >
         <div className='pb-6'>
+          // @ts-ignore
           <Input
             type='email'
             placeholder='Укажите e-mail'
