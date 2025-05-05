@@ -63,11 +63,9 @@ export const loginUser = createAsyncThunk<TUser, TLoginData>(
 export const logoutUser = createAsyncThunk<void, void>(
   'user/logout',
   async (_, { dispatch }) => {
-    await logoutApi().then(() => {
-      deleteCookie('accessToken');
-      localStorage.removeItem('refreshToken');
-      dispatch(logoutUser());
-    });
+    await logoutApi();
+    deleteCookie('accessToken');
+    localStorage.removeItem('refreshToken');
   }
 );
 
