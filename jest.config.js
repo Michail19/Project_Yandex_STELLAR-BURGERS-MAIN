@@ -10,17 +10,27 @@ module.exports = {
     '^@api$': '<rootDir>/src/utils/burger-api.ts',
     '^@slices/(.*)$': '<rootDir>/src/services/slices/$1',
     '^@selectors/(.*)$': '<rootDir>/src/services/selectors/$1',
-
     '\\.(css|scss|module\\.css)$': 'identity-obj-proxy',
-
     '\\.(jpg|jpeg|png|svg|woff|woff2)$': '<rootDir>/__mocks__/fileMock.js'
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
-  testMatch: ['**/*.test.{ts,tsx}'],
-  collectCoverageFrom: ['src/**/*.{ts,tsx}'],
-  globals: {
-    'ts-jest': {
-      tsconfig: './tsconfig.json'
-    }
-  }
+  testMatch: ['**/__tests__/**/*.test.{ts,tsx}'], // Обновленный паттерн
+  collectCoverageFrom: [
+    'src/**/*.{ts,tsx}',
+    '!src/**/*.test.{ts,tsx}',
+    '!src/**/index.ts'
+  ],
+  transform: {
+    '^.+\\.(ts|tsx)$': [
+      'ts-jest',
+      {
+        tsconfig: 'tsconfig.json',
+        isolatedModules: true // Добавьте эту опцию
+      }
+    ]
+  },
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/__mocks__/'
+  ]
 };

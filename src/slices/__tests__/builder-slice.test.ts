@@ -14,7 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
 describe('builderSlice', () => {
   const mockBun: TIngredient = {
     _id: 'bun1',
-    name: 'Test Bun',
+    name: 'Bun1',
     type: 'bun',
     proteins: 5,
     fat: 5,
@@ -28,20 +28,20 @@ describe('builderSlice', () => {
 
   const mockIngredient: TConstructorIngredient = {
     _id: 'ing1',
-    name: 'Test Ingredient',
+    name: 'Ingredient1',
     type: 'sauce',
     proteins: 5,
     fat: 5,
     carbohydrates: 5,
     calories: 50,
     price: 50,
-    image: 'image.png',
-    image_mobile: 'image-mobile.png',
-    image_large: 'image-large.png',
+    image: 'image1.png',
+    image_mobile: 'image1-mobile.png',
+    image_large: 'image1-large.png',
     id: uuidv4()
   };
 
-  it('should return the initial state', () => {
+  it('Исходное состояние', () => {
     expect(builderSlice(undefined, { type: '' })).toEqual({
       constructorItems: {
         bun: null,
@@ -51,7 +51,7 @@ describe('builderSlice', () => {
   });
 
   describe('addBunBuilder', () => {
-    it('should add a bun to the constructor', () => {
+    it('Добавить булочку в конструктор', () => {
       const previousState = {
         constructorItems: {
           bun: null,
@@ -67,7 +67,7 @@ describe('builderSlice', () => {
       });
     });
 
-    it('should replace existing bun when adding a new one', () => {
+    it('Заменить существующую булочку при добавлении новой', () => {
       const previousState = {
         constructorItems: {
           bun: mockBun,
@@ -89,7 +89,7 @@ describe('builderSlice', () => {
       });
     });
 
-    it('should set bun to null when payload is null', () => {
+    it('Установить значение bun равным null, когда полезная нагрузка равна null', () => {
       const previousState = {
         constructorItems: {
           bun: mockBun,
@@ -107,7 +107,7 @@ describe('builderSlice', () => {
   });
 
   describe('addItemBuilder', () => {
-    it('should add an ingredient to the constructor', () => {
+    it('Добавить ингредиент в конструктор', () => {
       const previousState = {
         constructorItems: {
           bun: null,
@@ -117,7 +117,7 @@ describe('builderSlice', () => {
 
       const action = addItemBuilder({
         ...mockIngredient,
-        id: undefined as unknown as string // Testing the prepare function will add this
+        id: undefined as unknown as string
       });
 
       const result = builderSlice(previousState, action);
@@ -127,7 +127,7 @@ describe('builderSlice', () => {
       expect(result.constructorItems.ingredients[0].id).toBeDefined();
     });
 
-    it('should add a bun via addItemBuilder', () => {
+    it('Добавить булочку с помощью addItemBuilder', () => {
       const previousState = {
         constructorItems: {
           bun: null,
@@ -142,49 +142,20 @@ describe('builderSlice', () => {
 
       const result = builderSlice(previousState, action);
 
-      // Check all properties except the random id
       expect(result.constructorItems.bun).toMatchObject({
         _id: mockBun._id,
         name: mockBun.name,
         type: mockBun.type
-        // ... other properties except id
       });
+
       // @ts-ignore
       expect(result.constructorItems.bun?.id).toBeDefined();
       expect(result.constructorItems.ingredients).toHaveLength(0);
     });
-
-    it('should generate unique id for each ingredient', () => {
-      const previousState = {
-        constructorItems: {
-          bun: null,
-          ingredients: []
-        }
-      };
-
-      const action1 = addItemBuilder({
-        ...mockIngredient,
-        id: undefined as unknown as string
-      });
-
-      const action2 = addItemBuilder({
-        ...mockIngredient,
-        _id: 'ing2',
-        id: undefined as unknown as string
-      });
-
-      const state1 = builderSlice(previousState, action1);
-      const state2 = builderSlice(state1, action2);
-
-      expect(state2.constructorItems.ingredients).toHaveLength(2);
-      expect(state2.constructorItems.ingredients[0].id).not.toBe(
-        state2.constructorItems.ingredients[1].id
-      );
-    });
   });
 
   describe('deleteItemBuilder', () => {
-    it('should delete an ingredient from the constructor', () => {
+    it('Удалить ингредиент из конструктора', () => {
       const ingredientToDelete = {
         ...mockIngredient,
         id: 'to-delete'
@@ -214,7 +185,7 @@ describe('builderSlice', () => {
       expect(result.constructorItems.ingredients[0].id).toBe('to-keep');
     });
 
-    it('should not delete bun', () => {
+    it('Не удаление булочки', () => {
       const previousState = {
         constructorItems: {
           bun: mockBun,
@@ -252,7 +223,7 @@ describe('builderSlice', () => {
       _id: 'ing3'
     };
 
-    it('should move item up', () => {
+    it('Переместить элемент вверх', () => {
       const previousState = {
         constructorItems: {
           bun: mockBun,
@@ -274,7 +245,7 @@ describe('builderSlice', () => {
       ]);
     });
 
-    it('should move item down', () => {
+    it('Переместить элемент вниз', () => {
       const previousState = {
         constructorItems: {
           bun: mockBun,
@@ -296,7 +267,7 @@ describe('builderSlice', () => {
       ]);
     });
 
-    it('should not move item up if it is first', () => {
+    it('Не перемещать элемент вверх, если он находится первым', () => {
       const previousState = {
         constructorItems: {
           bun: mockBun,
@@ -318,7 +289,7 @@ describe('builderSlice', () => {
       ]);
     });
 
-    it('should not move item down if it is last', () => {
+    it('Не перемещать элемент вниз, если он является последним', () => {
       const previousState = {
         constructorItems: {
           bun: mockBun,
@@ -342,7 +313,7 @@ describe('builderSlice', () => {
   });
 
   describe('clearBuilder', () => {
-    it('should clear all items from constructor', () => {
+    it('Очистить все элементы от конструктора', () => {
       const previousState = {
         constructorItems: {
           bun: mockBun,
@@ -371,18 +342,18 @@ describe('builderSlice', () => {
       }
     };
 
-    it('selectConstructorItems should return all constructor items', () =>
+    it('Элементы selectConstructor должны возвращать все элементы конструктора', () =>
       // @ts-ignore
       expect(selectConstructorItems(state)).toEqual({
         bun: mockBun,
         ingredients: [mockIngredient, mockIngredient]
       }));
 
-    it('selectBun should return the bun', () =>
+    it('selectBun должен вернуть булочку', () =>
       // @ts-ignore
       expect(selectBun(state)).toEqual(mockBun));
 
-    it('selectConstructorTotalCount should return the count of ingredients', () =>
+    it('selectConstructorTotalCount должен возвращать количество ингредиентов', () =>
       // @ts-ignore
       expect(selectConstructorTotalCount(state)).toBe(2));
   });

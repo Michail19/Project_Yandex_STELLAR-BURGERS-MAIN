@@ -8,13 +8,13 @@ import {
 } from '@reduxjs/toolkit';
 import { RootState } from '../services/store';
 
-interface FeedState {
+export interface FeedState {
   items: TOrdersData | null;
   loading: boolean;
   error: SerializedError | null;
 }
 
-const initialState: FeedState = {
+export const initialState: FeedState = {
   items: null,
   loading: false,
   error: null

@@ -15,7 +15,7 @@ export const fetchIngredients = createAsyncThunk(
   }
 );
 
-type IIngredientsState = {
+export type IIngredientsState = {
   items: TIngredient[];
   buns: TIngredient[];
   mains: TIngredient[];
@@ -44,7 +44,6 @@ const ingredientsSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchIngredients.fulfilled, (state, action) => {
-        console.log(state);
         state.isLoading = false;
         state.items = action.payload;
         state.buns = action.payload.filter((item) => item.type === 'bun');
