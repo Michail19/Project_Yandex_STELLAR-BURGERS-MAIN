@@ -20,7 +20,11 @@ import '../../index.css';
 import styles from './app.module.css';
 import { AppHeader, OrderInfo, IngredientDetails, Modal } from '@components';
 import { useDispatch, useSelector } from '../../services/store';
-import { fetchUser, selectAuthChecked } from '../../slices/user-slice';
+import {
+  fetchUser,
+  selectAuthChecked,
+  selectIsAuthenticated
+} from '../../slices/user-slice';
 import { useEffect } from 'react';
 import { fetchIngredients } from '../../slices/ingredients-slice';
 import { closeOrderModalData } from '../../slices/order-slice';
@@ -55,38 +59,10 @@ const App = () => {
         <Route path='/ingredients/:id' element={<IngredientDetails />} />
 
         {/* Защищённые маршруты */}
-        <Route
-          path='/login'
-          element={
-            <ProtectedRoute>
-              <Login />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='/register'
-          element={
-            <ProtectedRoute>
-              <Register />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='/forgot-password'
-          element={
-            <ProtectedRoute>
-              <ForgotPassword />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='/reset-password'
-          element={
-            <ProtectedRoute>
-              <ResetPassword />
-            </ProtectedRoute>
-          }
-        />
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
+        <Route path='/forgot-password' element={<ForgotPassword />} />
+        <Route path='/reset-password' element={<ResetPassword />} />
         <Route
           path='/profile'
           element={
