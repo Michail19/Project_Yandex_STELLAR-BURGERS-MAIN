@@ -32,7 +32,6 @@ export const ResetPasswordUI: FC<ResetPasswordUIProps> = ({
           />
         </div>
         <div className='pb-6'>
-          // @ts-ignore
           <Input
             type='text'
             placeholder='Введите код из письма'
@@ -42,6 +41,8 @@ export const ResetPasswordUI: FC<ResetPasswordUIProps> = ({
             error={false}
             errorText=''
             size='default'
+            onPointerEnterCapture={() => {}}
+            onPointerLeaveCapture={() => {}}
           />
         </div>
         <div className={`pb-6 ${styles.button}`}>

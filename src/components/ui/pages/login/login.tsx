@@ -26,7 +26,6 @@ export const LoginUI: FC<LoginUIProps> = ({
       >
         <>
           <div className='pb-6'>
-            // @ts-ignore
             <Input
               type='email'
               placeholder='E-mail'
@@ -36,6 +35,8 @@ export const LoginUI: FC<LoginUIProps> = ({
               error={false}
               errorText=''
               size='default'
+              onPointerEnterCapture={() => {}}
+              onPointerLeaveCapture={() => {}}
             />
           </div>
           <div className='pb-6'>

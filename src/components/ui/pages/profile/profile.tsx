@@ -25,7 +25,6 @@ export const ProfileUI: FC<ProfileUIProps> = ({
     >
       <>
         <div className='pb-6'>
-          // @ts-ignore
           <Input
             type={'text'}
             placeholder={'Имя'}
@@ -36,10 +35,11 @@ export const ProfileUI: FC<ProfileUIProps> = ({
             errorText={''}
             size={'default'}
             icon={'EditIcon'}
+            onPointerEnterCapture={() => {}}
+            onPointerLeaveCapture={() => {}}
           />
         </div>
         <div className='pb-6'>
-          // @ts-ignore
           <Input
             type={'email'}
             placeholder={'E-mail'}
@@ -50,10 +50,11 @@ export const ProfileUI: FC<ProfileUIProps> = ({
             errorText={''}
             size={'default'}
             icon={'EditIcon'}
+            onPointerEnterCapture={() => {}}
+            onPointerLeaveCapture={() => {}}
           />
         </div>
         <div className='pb-6'>
-          // @ts-ignore
           <Input
             type={'password'}
             placeholder={'Пароль'}
@@ -63,6 +64,8 @@ export const ProfileUI: FC<ProfileUIProps> = ({
             error={false}
             errorText={''}
             size={'default'}
+            onPointerEnterCapture={() => {}}
+            onPointerLeaveCapture={() => {}}
             icon={'EditIcon'}
           />
         </div>
