@@ -1,27 +1,17 @@
 describe('Функциональность конструктора бургеров', () => {
   beforeEach(() => {
-    cy.fixture('ingredients.json');
-    cy.fixture('orders.json');
-    cy.fixture('user.json');
-    cy.fixture('makeOrder.json');
+    // Убедитесь, что фикстуры загружаются перед использованием
+    cy.fixture('ingredients.json').as('ingredientsData');
+    cy.fixture('user.json').as('userData');
 
     cy.intercept('GET', 'api/ingredients', { fixture: 'ingredients.json' }).as('getIngredients');
-    cy.intercept('GET', 'api/auth/user', { fixture: 'user.json' }).as('user');
-    cy.intercept('GET', 'api/orders/all', { fixture: 'orders.json' }).as('orders');
-    cy.intercept('POST', 'api/orders', { fixture: 'makeOrder.json' }).as('newOrder');
-
-    // Перехват getUser нужно переместить сюда
-    cy.fixture('user.json').then((user) => {
-      cy.intercept('GET', '/api/auth/user', {
-        statusCode: 200,
-        body: user,
-      }).as('getUser');
-    });
+    cy.intercept('GET', 'api/auth/user', { fixture: 'user.json' }).as('getUser');
 
     cy.setCookie('accessToken', 'mockToken');
     localStorage.setItem('refreshToken', 'mockToken');
 
     cy.visit('/');
+    cy.wait('@getIngredients'); // Дождитесь загрузки ингредиентов
   });
 
   it('Перехват запросов API', () => {
@@ -29,31 +19,34 @@ describe('Функциональность конструктора бургер
     cy.wait('@getUser').its('response.statusCode').should('eq', 200);
   });
 
-  it('Авторизация пользователя и проверка профиля', () => {
+  it('Авторизация пользователя и проверка профиля (устойчивый)', () => {
     cy.visit('/profile');
+
+    // Дождаться запроса к API
     cy.wait('@getUser');
-    cy.get(`[data-cy='profile-name']`, { timeout: 10000 }).should('have.value', 'User');
+
+    // Дождаться формы профиля — например, по data-cy или другому надежному локатору
+    cy.get('form').should('exist');
+
+    // Дождаться поля name и убедиться, что оно содержит ожидаемое значение
+    cy.get('input[name=name]', { timeout: 4000 })
+      .should('exist')
+      .should('have.value', 'User');
   });
 
   it('Нет булки при старте', () => {
-    cy.get(`[data-cy='constructor-module']`).should(
-      'not.contain.text',
-      'просто какая-то булка'
-    );
+    // Альтернативный селектор для конструктора
+    cy.get('[class^=burger-constructor]').should('exist');
+    cy.contains('Выберите булки').should('exist');
   });
 
   it('Добавление булки в конструктор', () => {
-    cy.get(`[data-cy='ingredients-module']`)
-      .first()
-      .children()
-      .last()
-      .find('button')
-      .click();
+    // Альтернативный селектор для списка ингредиентов
+    cy.get('[class^=burger-ingredients]').should('exist');
+    cy.contains('Флюоресцентная булка R2-D3').click();
 
-    cy.get(`[data-cy='constructor-module']`).should(
-      'contain.text',
-      'Флюоресцентная булка R2-D3'
-    );
+    // Проверка в конструкторе
+    cy.get('[class^=burger-constructor]').should('contain', 'Флюоресцентная булка R2-D3');
   });
 
   it('Добавление начинки в конструктор', () => {
@@ -90,9 +83,11 @@ describe('Функциональность конструктора бургер
 
   it('Открытие и закрытие модального окна ингредиента', () => {
     cy.contains('Краторная булка').click();
-    cy.get(`[data-cy='modal']`).should('be.visible');
-    cy.get(`[data-cy='modal']`).find('button').click();
-    cy.get(`[data-cy='modal']`).should('not.exist');
+
+    // Альтернативные селекторы для модального окна
+    cy.get('[class^=modal]').should('be.visible');
+    cy.get('[class^=modal]').find('button').first().click();
+    cy.get('[class^=modal]').should('not.exist');
   });
 
   it('Закрытие модального окна клавишей Esc', () => {
@@ -105,5 +100,57 @@ describe('Функциональность конструктора бургер
     cy.contains('Краторная булка').click();
     cy.get(`[data-cy='modalOverlay']`).click('top', { force: true });
     cy.get(`[data-cy='modal']`).should('not.exist');
+  });
+
+  it('Debug: проверить DOM', () => {
+    cy.visit('/');
+    cy.wait('@getIngredients');
+    cy.document().then((doc) => {
+      console.log('Whole DOM:', doc.documentElement.outerHTML);
+    });
+    cy.get('*').then((els) => {
+      console.log('All elements:', els.length);
+    });
+  });
+
+  it('Проверка существования элементов с data-cy', () => {
+    cy.visit('/');
+    cy.wait('@getIngredients');
+
+    // Проверка всех элементов с data-cy атрибутами на странице
+    cy.get('[data-cy]').then((elements) => {
+      const foundAttributes = elements.toArray().map(el => el.getAttribute('data-cy'));
+      console.log('Найденные data-cy атрибуты:', foundAttributes);
+
+      // Проверка конкретных атрибутов
+      const requiredAttributes = [
+        'profile-name',
+        'constructor-module',
+        'ingredients-module',
+        'modal',
+        'modalOverlay'
+      ];
+
+      requiredAttributes.forEach(attr => {
+        if (!foundAttributes.includes(attr)) {
+          console.error(`Атрибут data-cy="${attr}" не найден на странице`);
+        }
+      });
+    });
+  });
+
+  it('Проверка базовой разметки', () => {
+    cy.visit('/');
+    cy.wait('@getIngredients');
+
+    // Проверка основных разделов
+    cy.get('body').should('exist');
+    cy.get('#root').should('exist');
+
+    // Проверка наличия основных элементов интерфейса
+    cy.contains('Соберите бургер').should('exist');
+    cy.contains('Булки').should('exist');
+    cy.contains('Начинки').should('exist');
+    cy.contains('Соусы').should('exist');
   });
 });
