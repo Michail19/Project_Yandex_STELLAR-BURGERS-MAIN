@@ -321,10 +321,12 @@ describe('user slice', () => {
     };
 
     it('should select isAuthenticated', () => {
+      // @ts-ignore
       expect(selectIsAuthenticated(mockState)).toBe(true);
     });
 
     it('should select user data', () => {
+      // @ts-ignore
       expect(selectUserData(mockState)).toEqual(mockUser);
     });
 
@@ -336,6 +338,7 @@ describe('user slice', () => {
           loginError: { message: 'Login failed' }
         }
       };
+      // @ts-ignore
       expect(selectLoginError(errorState)).toEqual({ message: 'Login failed' });
     });
 
@@ -347,6 +350,7 @@ describe('user slice', () => {
           registerError: { message: 'Register failed' }
         }
       };
+      // @ts-ignore
       expect(selectRegisterError(errorState)).toEqual({
         message: 'Register failed'
       });
