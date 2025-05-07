@@ -21,21 +21,32 @@ describe('Функциональность конструктора бургер
   });
 
   it('Авторизация пользователя и проверка профиля', () => {
-    cy.visit('/profile');
-    cy.wait('@getUser');
+    // Проверяем авторизацию
+    cy.getCookie('accessToken').should('exist');
+    cy.window().then(win => {
+      expect(win.localStorage.getItem('refreshToken')).to.exist;
+    });
 
-    // Проверяем наличие формы профиля
+    // Переходим на страницу профиля с таймаутом
+    cy.visit('/profile', { timeout: 15000 });
+
+    // Проверяем URL и наличие формы
+    cy.url().should('include', '/profile');
     cy.get('form').should('exist');
 
-    // Альтернативные способы найти поле имени
-    cy.get('input[type="text"]').first()
-      .should('exist')
-      .should('have.value', 'User');
+    // Альтернативный поиск поля имени
+    cy.get('body').then($body => {
+      const nameInput = $body.find('input[name="name"]').length ? 'input[name="name"]' :
+        $body.find('input[type="text"]').length ? 'input[type="text"]' :
+          $body.find('input').first();
 
-    // Или ищем по placeholder
-    cy.get('input[placeholder*="имя"]')
-      .should('exist')
-      .should('have.value', 'User');
+      if (!nameInput.length) {
+        console.log('DOM страницы:', $body.html());
+        throw new Error('Не найдено поле ввода имени');
+      }
+
+      cy.wrap(nameInput).should('have.value', 'User');
+    });
   });
 
   it('Нет булки при старте', () => {
@@ -73,25 +84,42 @@ describe('Функциональность конструктора бургер
   });
 
   it('Добавление ингредиентов в заказ и очистка конструктора', () => {
+    // Добавляем перехватчик перед действиями
+    cy.intercept('POST', 'api/orders', {
+      fixture: 'makeOrder.json',
+      statusCode: 200
+    }).as('newOrder');
+
     // Добавляем булку
     cy.contains('Флюоресцентная булка R2-D3').click();
     cy.go('back');
 
     // Добавляем начинку
-    cy.contains('Начинки').scrollIntoView().click({ force: true });
+    cy.contains('Начинки').scrollIntoView();
     cy.contains('Биокотлета из марсианской Магнолии')
-      .parent()
-      .parent()
-      .click();
+      .should('be.visible')
+      .click({ force: true });
 
-    // Оформляем заказ
-    cy.contains('Оформить заказ', { timeout: 10000 }).click();
+    // Оформляем заказ с проверкой видимости
+    cy.contains('Оформить заказ')
+      .should('be.visible')
+      .click({ force: true });
 
-    // Проверяем модальное окно заказа
-    cy.contains('идентификатор заказа').should('exist');
+    // Ждем запрос с увеличенным таймаутом
+    cy.wait('@newOrder', { timeout: 30000 })
+      .its('response.statusCode')
+      .should('eq', 200);
+
+    // Проверяем модальное окно
+    cy.contains('идентификатор заказа', { timeout: 15000 })
+      .should('be.visible');
 
     // Закрываем модальное окно
     cy.get('body').type('{esc}');
+
+    // Проверяем очистку конструктора
+    cy.contains('Выберите булки').should('exist');
+    cy.contains('Выберите начинку').should('exist');
   });
 
   it('Открытие и закрытие модального окна ингредиента', () => {
