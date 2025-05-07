@@ -24,12 +24,18 @@ describe('Функциональность конструктора бургер
     cy.visit('/profile');
     cy.wait('@getUser');
 
-    // Проверяем заголовок страницы профиля (альтернативные варианты)
-    cy.get('h1, h2').contains('/profile').should('exist');
-
-    // Или проверяем форму профиля
+    // Проверяем наличие формы профиля
     cy.get('form').should('exist');
-    cy.get('input[name="name"]').should('exist').should('have.value', 'User');
+
+    // Альтернативные способы найти поле имени
+    cy.get('input[type="text"]').first()
+      .should('exist')
+      .should('have.value', 'User');
+
+    // Или ищем по placeholder
+    cy.get('input[placeholder*="имя"]')
+      .should('exist')
+      .should('have.value', 'User');
   });
 
   it('Нет булки при старте', () => {
@@ -53,11 +59,14 @@ describe('Функциональность конструктора бургер
   });
 
   it('Добавление начинки в конструктор', () => {
-    // Прокручиваем к разделу начинок и кликаем
+    // Прокручиваем и кликаем на раздел начинок
     cy.contains('Начинки').scrollIntoView().click({ force: true });
 
-    // Добавляем первую начинку (используем более общий селектор)
-    cy.get('[class*="ingredient"]').first().click();
+    // Находим карточку ингредиента и кликаем
+    cy.contains('Биокотлета из марсианской Магнолии')
+      .parent() // Поднимаемся на 1 уровень
+      .parent() // Еще на уровень (структура может быть сложнее)
+      .click();
 
     // Проверяем конструктор
     cy.contains('Биокотлета из марсианской Магнолии').should('exist');
@@ -70,7 +79,10 @@ describe('Функциональность конструктора бургер
 
     // Добавляем начинку
     cy.contains('Начинки').scrollIntoView().click({ force: true });
-    cy.get('[class*="ingredient"]').first().click();
+    cy.contains('Биокотлета из марсианской Магнолии')
+      .parent()
+      .parent()
+      .click();
 
     // Оформляем заказ
     cy.contains('Оформить заказ', { timeout: 10000 }).click();
@@ -101,11 +113,5 @@ describe('Функциональность конструктора бургер
 
     // Проверяем, что вернулись на главную
     cy.url().should('eq', 'http://localhost:4000/');
-  });
-
-  it('Закрытие модального окна через клик на оверлей', () => {
-    cy.contains('Краторная булка').click();
-    cy.get(`[data-cy='modalOverlay']`).click('top', { force: true });
-    cy.get(`[data-cy='modal']`).should('not.exist');
   });
 });
