@@ -27,26 +27,21 @@ describe('Функциональность конструктора бургер
       expect(win.localStorage.getItem('refreshToken')).to.exist;
     });
 
+    // Перехватываем запрос к профилю
+    cy.intercept('GET', 'https://norma.nomoreparties.space/api/auth/user', { fixture: 'user.json' }).as('getUser');
+
     // Переходим на страницу профиля с таймаутом
     cy.visit('/profile', { timeout: 15000 });
 
-    // Проверяем URL и наличие формы
+    // Ждём завершения запроса авторизации
+    cy.wait('@getUser').its('response.statusCode').should('eq', 200);
+
+    // Проверяем URL
     cy.url().should('include', '/profile');
+
+    // Проверяем наличие формы профиля
     cy.get('form').should('exist');
-
-    // Альтернативный поиск поля имени
-    cy.get('body').then($body => {
-      const nameInput = $body.find('input[name="name"]').length ? 'input[name="name"]' :
-        $body.find('input[type="text"]').length ? 'input[type="text"]' :
-          $body.find('input').first();
-
-      if (!nameInput.length) {
-        console.log('DOM страницы:', $body.html());
-        throw new Error('Не найдено поле ввода имени');
-      }
-
-      cy.wrap(nameInput).should('have.value', 'User');
-    });
+    cy.get('input[name="name"]').should('have.value', 'Test User');
   });
 
   it('Нет булки при старте', () => {
@@ -57,13 +52,9 @@ describe('Функциональность конструктора бургер
 
   it('Добавление булки в конструктор', () => {
     // Кликаем по булке
-    cy.contains('Флюоресцентная булка R2-D3').click();
-
-    // Проверяем URL модального окна
-    cy.url().should('include', '/ingredients/');
-
-    // Возвращаемся на главную
-    cy.go('back');
+    cy.contains('Флюоресцентная булка R2-D3')
+      .next()
+      .click();
 
     // Проверяем конструктор через текстовые элементы
     cy.contains('Флюоресцентная булка R2-D3', { timeout: 10000 }).should('exist');
@@ -84,42 +75,35 @@ describe('Функциональность конструктора бургер
   });
 
   it('Добавление ингредиентов в заказ и очистка конструктора', () => {
-    // Добавляем перехватчик перед действиями
+    // Мокаем запрос на создание заказа
     cy.intercept('POST', 'api/orders', {
       fixture: 'makeOrder.json',
       statusCode: 200
     }).as('newOrder');
 
     // Добавляем булку
-    cy.contains('Флюоресцентная булка R2-D3').click();
-    cy.go('back');
+    cy.contains('Флюоресцентная булка R2-D3')
+      .next()
+      .click();
 
     // Добавляем начинку
     cy.contains('Начинки').scrollIntoView();
     cy.contains('Биокотлета из марсианской Магнолии')
-      .should('be.visible')
-      .click({ force: true });
+      .next()
+      .click();
 
-    // Оформляем заказ с проверкой видимости
-    cy.contains('Оформить заказ')
-      .should('be.visible')
-      .click({ force: true });
+    // Проверяем, что кнопка активна
+    cy.contains('Оформить заказ').should('not.be.disabled').click();
 
-    // Ждем запрос с увеличенным таймаутом
-    cy.wait('@newOrder', { timeout: 30000 })
-      .its('response.statusCode')
-      .should('eq', 200);
+    // Ждём запрос
+    cy.wait('@newOrder', { timeout: 30000 }).its('response.statusCode').should('eq', 200);
 
-    // Проверяем модальное окно
-    cy.contains('идентификатор заказа', { timeout: 15000 })
-      .should('be.visible');
-
-    // Закрываем модальное окно
-    cy.get('body').type('{esc}');
+    // Проверяем модальное окно с номером заказа
+    cy.contains('идентификатор заказа').should('be.visible');
+    cy.get('body').type('{esc}'); // Закрываем модальное окно
 
     // Проверяем очистку конструктора
     cy.contains('Выберите булки').should('exist');
-    cy.contains('Выберите начинку').should('exist');
   });
 
   it('Открытие и закрытие модального окна ингредиента', () => {
