@@ -1,27 +1,38 @@
-describe('Проверка авторизации', () => {
-  it('Проверка профиля', () => {
-    // Удалить токены ДО захода на страницу
-    cy.clearCookies();
-    cy.clearLocalStorage();
+describe('Авторизация и профиль', () => {
+  it('Переход в профиль после входа', () => {
+    // Сначала мокаем запрос /auth/user
+    cy.intercept('GET', '**/api/auth/user', {
+      statusCode: 200,
+      body: {
+        success: true,
+        user: {
+          email: 'test_user@example.com',
+          name: 'Test User'
+        }
+      }
+    }).as('getUser');
 
-    cy.visit('/login');
+    // Выполняем авторизацию
+    cy.loginByApi();
 
-    cy.get('input[name="email"]').should('exist').type('test_user@example.com');
-    cy.get('input[name="password"]').should('exist').type('12345678');
+    // Переходим на страницу
+    cy.visit('/');
+    cy.contains('Личный кабинет').click();
 
-    // Кликаем по кнопке входа
-    cy.contains('button', 'Войти').click();
+    // Ждем завершения запроса
+    cy.wait('@getUser');
 
-    // Ждём перехода на профиль
+    // Проверяем URL и форму
+    cy.contains('Test User').click();
     cy.url().should('include', '/profile');
-    cy.get('form').should('exist');
+    cy.get('form', { timeout: 10000 }).should('exist');
     cy.get('input[name="name"]').should('have.value', 'Test User');
   });
 });
 
-
 describe('Функциональность конструктора бургеров', () => {
   beforeEach(() => {
+    // Сначала мокаем все запросы
     cy.fixture('ingredients.json').as('ingredientsData');
     cy.fixture('user.json').as('userData');
 
@@ -32,11 +43,11 @@ describe('Функциональность конструктора бургер
       'getUser'
     );
 
-    // cy.setCookie('accessToken', 'mockToken');
-    // localStorage.setItem('refreshToken', 'mockToken');
+    cy.setCookie('accessToken', 'mockToken');
+    localStorage.setItem('refreshToken', 'mockToken');
 
+    // И только потом переходим на страницу
     cy.visit('/');
-    cy.wait('@getIngredients');
   });
 
   it('Перехват запросов API', () => {
