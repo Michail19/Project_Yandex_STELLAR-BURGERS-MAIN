@@ -25,3 +25,7 @@ Cypress.Commands.add('loginByApi', () => {
     }).as('getUser');
   });
 });
+
+Cypress.on('window:before:load', (win) => {
+  cy.spy(win, 'fetch').as('fetchSpy');
+});

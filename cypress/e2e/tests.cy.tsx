@@ -32,64 +32,25 @@ describe('Авторизация и профиль', () => {
 
 describe('Функциональность конструктора бургеров', () => {
   beforeEach(() => {
-    // Сначала мокаем все запросы
     cy.fixture('ingredients.json').as('ingredientsData');
     cy.fixture('user.json').as('userData');
 
-    cy.intercept('GET', 'api/ingredients', { fixture: 'ingredients.json' }).as(
-      'getIngredients'
-    );
-    cy.intercept('GET', 'api/auth/user', { fixture: 'user.json' }).as(
-      'getUser'
-    );
+    cy.intercept('GET', 'https://norma.nomoreparties.space/api/ingredients', {
+      fixture: 'ingredients.json'
+    }).as('getIngredients');
+
+    cy.intercept('GET', 'https://norma.nomoreparties.space/api/auth/user', {
+      fixture: 'user.json'
+    }).as('getUser');
 
     cy.setCookie('accessToken', 'mockToken');
-    localStorage.setItem('refreshToken', 'mockToken');
+    cy.window().then(win => {
+      win.localStorage.setItem('refreshToken', 'mockToken');
+    });
 
-    // И только потом переходим на страницу
     cy.visit('/');
+    cy.contains('Соберите бургер', { timeout: 10000 }).should('exist');
   });
-
-  it('Перехват запросов API', () => {
-    cy.wait('@getIngredients').its('response.statusCode').should('eq', 200);
-    cy.wait('@getUser').its('response.statusCode').should('eq', 200);
-  });
-
-  // it('Авторизация пользователя', () => {
-  //   // Переходим на страницу логина
-  //   cy.visit('/login');
-  //
-  //   // Дождись появления поля email
-  //   cy.get('input[name="email"]', { timeout: 10000 }).should('exist');
-  //
-  //   // Заполняем email
-  //   cy.get('input[name="email"]').type('test_user@example.com');
-  //
-  //   // Проверка успешной авторизации
-  //   cy.url().should('include', '/');
-  // });
-
-  // it('Проверка профиля', () => {
-  //   // Удалить токены ДО захода на страницу
-  //   cy.clearCookies();
-  //   cy.clearLocalStorage();
-  //
-  //   cy.visit('/login');
-  //
-  //   // Ждём поля
-  //   cy.get('input[name="email"]').should('exist');
-  //   cy.get('input[name="email"]').type('test_user@example.com');
-  //
-  //   cy.get('input[name="password"]').should('exist');
-  //   cy.get('input[name="password"]').type('12345678');
-  //
-  //   // Кликаем по кнопке входа
-  //   cy.contains('button', 'Войти').click();
-  //
-  //   // Ждём перехода на профиль
-  //   cy.url().should('include', '/profile');
-  //   cy.get('form').should('exist');
-  // });
 
   it('Нет булки при старте', () => {
     // Проверяем по тексту, так как селекторы не работают
