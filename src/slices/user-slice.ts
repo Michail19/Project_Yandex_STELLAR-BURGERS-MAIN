@@ -16,7 +16,7 @@ import { TUser } from '@utils-types';
 import { setCookie, deleteCookie } from '../utils/cookie';
 import { RootState } from '../services/store';
 
-interface TUserState {
+export interface TUserState {
   data: TUser | null;
   isAuthenticated: boolean;
   loginError?: SerializedError;
