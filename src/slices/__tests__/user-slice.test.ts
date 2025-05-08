@@ -20,6 +20,7 @@ import {
 } from '@api';
 import { TUser } from '@utils-types';
 
+// Моки
 jest.mock('@api', () => ({
   registerUserApi: jest.fn(),
   loginUserApi: jest.fn(),
@@ -47,10 +48,10 @@ const mockedUpdateUserApi = updateUserApi as jest.MockedFunction<
 const mockedSetCookie = jest.requireMock('../../utils/cookie').setCookie;
 const mockedDeleteCookie = jest.requireMock('../../utils/cookie').deleteCookie;
 
-describe('user slice', () => {
+describe('Слайс пользователя', () => {
   const mockUser: TUser = {
     name: 'Test User',
-    email: 'test@example.com'
+    email: 'test_user@example.com'
   };
 
   const mockApiResponse = {
@@ -64,22 +65,22 @@ describe('user slice', () => {
     jest.clearAllMocks();
   });
 
-  it('should handle initial state', () => {
+  it('Возвращение начального состояния', () => {
     expect(userSlice(undefined, { type: 'unknown' })).toEqual({
       data: null,
       isAuthenticated: false
     });
   });
 
-  describe('async thunks', () => {
+  describe('Асинхронные операции', () => {
     describe('registerUser', () => {
-      it('should handle pending', () => {
+      it('Обрабатывает состояние pending', () => {
         const action = { type: registerUser.pending.type };
         const state = userSlice(undefined, action);
         expect(state.registerError).toBeUndefined();
       });
 
-      it('should handle fulfilled', () => {
+      it('Обрабатывает состояние fulfilled', () => {
         const action = {
           type: registerUser.fulfilled.type,
           payload: mockUser
@@ -90,7 +91,7 @@ describe('user slice', () => {
         expect(state.data).toEqual(mockUser);
       });
 
-      it('should handle rejected', () => {
+      it('Обрабатывает состояние rejected', () => {
         const error = { message: 'Registration failed' };
         const action = {
           type: registerUser.rejected.type,
@@ -104,7 +105,7 @@ describe('user slice', () => {
         expect(state.registerError).toEqual(error);
       });
 
-      it('should register user successfully', async () => {
+      it('Успешная регистрация пользователя', async () => {
         mockedRegisterUserApi.mockResolvedValue(mockApiResponse);
 
         const store = configureStore({
@@ -116,8 +117,8 @@ describe('user slice', () => {
         await store.dispatch(
           registerUser({
             name: 'Test User',
-            email: 'test@example.com',
-            password: 'password'
+            email: 'test_user@example.com',
+            password: '12345678'
           })
         );
 
@@ -129,13 +130,13 @@ describe('user slice', () => {
     });
 
     describe('loginUser', () => {
-      it('should handle pending', () => {
+      it('Обрабатывает состояние pending', () => {
         const action = { type: loginUser.pending.type };
         const state = userSlice(undefined, action);
         expect(state.loginError).toBeUndefined();
       });
 
-      it('should handle fulfilled', () => {
+      it('Обрабатывает состояние fulfilled', () => {
         const action = {
           type: loginUser.fulfilled.type,
           payload: mockUser
@@ -146,7 +147,7 @@ describe('user slice', () => {
         expect(state.data).toEqual(mockUser);
       });
 
-      it('should handle rejected', () => {
+      it('Обрабатывает состояние rejected', () => {
         const error = { message: 'Login failed' };
         const action = {
           type: loginUser.rejected.type,
@@ -160,7 +161,7 @@ describe('user slice', () => {
         expect(state.loginError).toEqual(error);
       });
 
-      it('should login user successfully', async () => {
+      it('Успешное авторизовывание пользователя', async () => {
         mockedLoginUserApi.mockResolvedValue(mockApiResponse);
 
         const store = configureStore({
@@ -171,8 +172,8 @@ describe('user slice', () => {
 
         await store.dispatch(
           loginUser({
-            email: 'test@example.com',
-            password: 'password'
+            email: 'test_user@example.com',
+            password: '12345678'
           })
         );
 
@@ -187,7 +188,7 @@ describe('user slice', () => {
     });
 
     describe('logoutUser', () => {
-      it('should handle fulfilled', () => {
+      it('Обрабатывает состояние fulfilled', () => {
         const initialStateWithUser: TUserState = {
           data: mockUser,
           isAuthenticated: true
@@ -199,7 +200,7 @@ describe('user slice', () => {
         expect(state.data).toBeNull();
       });
 
-      it('should logout user successfully', async () => {
+      it('Успешное выполнение выхода пользователя', async () => {
         mockedLogoutApi.mockResolvedValue({ success: true });
 
         const store = configureStore({
@@ -224,7 +225,7 @@ describe('user slice', () => {
     });
 
     describe('fetchUser', () => {
-      it('should handle fulfilled', () => {
+      it('Обрабатывает состояние fulfilled', () => {
         const action = {
           type: fetchUser.fulfilled.type,
           payload: mockUser
@@ -234,7 +235,7 @@ describe('user slice', () => {
         expect(state.data).toEqual(mockUser);
       });
 
-      it('should fetch user data successfully', async () => {
+      it('Успешное получение данных пользователя', async () => {
         mockedGetUserApi.mockResolvedValue({
           success: true,
           user: mockUser
@@ -255,10 +256,10 @@ describe('user slice', () => {
     });
 
     describe('updateUser', () => {
-      it('should handle fulfilled', () => {
+      it('Обрабатывает состояние fulfilled', () => {
         const updatedUser = {
           ...mockUser,
-          name: 'Updated User'
+          name: 'Test User'
         };
 
         const action = {
@@ -269,10 +270,10 @@ describe('user slice', () => {
         expect(state.data).toEqual(updatedUser);
       });
 
-      it('should update user data successfully', async () => {
+      it('Успешное обновление данных пользователя', async () => {
         const updatedUser = {
           ...mockUser,
-          name: 'Updated User'
+          name: 'Test User'
         };
 
         mockedUpdateUserApi.mockResolvedValue({
@@ -294,8 +295,8 @@ describe('user slice', () => {
 
         await store.dispatch(
           updateUser({
-            name: 'Updated User',
-            email: 'test@example.com'
+            name: 'Test User',
+            email: 'test_user@example.com'
           })
         );
 
@@ -305,7 +306,7 @@ describe('user slice', () => {
     });
   });
 
-  describe('selectors', () => {
+  describe('Селекторы', () => {
     const mockState = {
       user: {
         data: mockUser,
@@ -313,24 +314,23 @@ describe('user slice', () => {
         loginError: null,
         registerError: null
       },
-      // Другие слайсы, если они нужны для RootState
       feed: {} as any,
       builder: {} as any,
       ingredients: {} as any,
       order: {} as any
     };
 
-    it('should select isAuthenticated', () => {
+    it('Выводит статус аутентификации', () => {
       // @ts-ignore
       expect(selectIsAuthenticated(mockState)).toBe(true);
     });
 
-    it('should select user data', () => {
+    it('Выводит данные пользователя', () => {
       // @ts-ignore
       expect(selectUserData(mockState)).toEqual(mockUser);
     });
 
-    it('should select login error', () => {
+    it('Выводит ошибку авторизации', () => {
       const errorState = {
         ...mockState,
         user: {
@@ -342,7 +342,7 @@ describe('user slice', () => {
       expect(selectLoginError(errorState)).toEqual({ message: 'Login failed' });
     });
 
-    it('should select register error', () => {
+    it('Выводит ошибку регистрации', () => {
       const errorState = {
         ...mockState,
         user: {

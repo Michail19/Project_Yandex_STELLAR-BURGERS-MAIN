@@ -18,7 +18,7 @@ const mockedGetIngredientsApi = getIngredientsApi as jest.MockedFunction<
   typeof getIngredientsApi
 >;
 
-describe('ingredients slice', () => {
+describe('Слайс ингредиентов', () => {
   const mockIngredients: TIngredient[] = [
     {
       _id: '1',
@@ -65,7 +65,7 @@ describe('ingredients slice', () => {
     jest.clearAllMocks();
   });
 
-  it('should handle initial state', () => {
+  it('Возвращает начальное состояние', () => {
     expect(ingredientsSlice(undefined, { type: 'unknown' })).toEqual({
       items: [],
       buns: [],
@@ -77,7 +77,7 @@ describe('ingredients slice', () => {
   });
 
   describe('fetchIngredients', () => {
-    it('should handle pending', () => {
+    it('Обрабатывает состояние pending', () => {
       const action = { type: fetchIngredients.pending.type };
       const state = ingredientsSlice(undefined, action);
       expect(state).toEqual({
@@ -90,7 +90,7 @@ describe('ingredients slice', () => {
       });
     });
 
-    it('should handle fulfilled', () => {
+    it('Обрабатывает состояние fulfilled', () => {
       const action = {
         type: fetchIngredients.fulfilled.type,
         payload: mockIngredients
@@ -107,7 +107,7 @@ describe('ingredients slice', () => {
       });
     });
 
-    it('should handle rejected', () => {
+    it('Обрабатывает состояние rejected', () => {
       const error = { message: 'Request failed' };
       const action = {
         type: fetchIngredients.rejected.type,
@@ -125,7 +125,7 @@ describe('ingredients slice', () => {
       });
     });
 
-    it('should fetch ingredients successfully', async () => {
+    it('Успешно загружает ингредиенты', async () => {
       mockedGetIngredientsApi.mockResolvedValue(mockIngredients);
 
       const store = configureStore({
@@ -151,7 +151,7 @@ describe('ingredients slice', () => {
       expect(state.error).toBeNull();
     });
 
-    it('should handle fetch ingredients error', async () => {
+    it('Обрабатывает ошибку при загрузке ингредиентов', async () => {
       const errorMessage = 'Network Error';
       mockedGetIngredientsApi.mockRejectedValue(new Error(errorMessage));
 
@@ -170,7 +170,7 @@ describe('ingredients slice', () => {
     });
   });
 
-  describe('selectors', () => {
+  describe('Селекторы', () => {
     const mockState = {
       ingredients: {
         items: mockIngredients,
@@ -186,29 +186,29 @@ describe('ingredients slice', () => {
       user: {} as any
     };
 
-    it('should select all ingredients', () => {
+    it('Выбирает все ингредиенты', () => {
       expect(selectIngredients(mockState)).toEqual(mockIngredients);
     });
 
-    it('should select buns', () => {
+    it('Выбирает булки', () => {
       expect(selectBuns(mockState)).toEqual(
         mockIngredients.filter((item) => item.type === 'bun')
       );
     });
 
-    it('should select mains', () => {
+    it('Выбирает начинки', () => {
       expect(selectMains(mockState)).toEqual(
         mockIngredients.filter((item) => item.type === 'main')
       );
     });
 
-    it('should select sauces', () => {
+    it('Выбирает соусы', () => {
       expect(selectSauces(mockState)).toEqual(
         mockIngredients.filter((item) => item.type === 'sauce')
       );
     });
 
-    it('should select loading state', () => {
+    it('Выбирает состояние загрузки', () => {
       expect(selectIsLoading(mockState)).toBe(false);
     });
   });

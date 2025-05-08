@@ -19,7 +19,7 @@ const mockedGetFeedsApi = getFeedsApi as jest.MockedFunction<
   typeof getFeedsApi
 >;
 
-describe('feed slice', () => {
+describe('Слайс feed', () => {
   const mockOrder: TOrder = {
     _id: '1',
     status: 'done',
@@ -45,12 +45,12 @@ describe('feed slice', () => {
     jest.clearAllMocks();
   });
 
-  it('should handle initial state', () => {
+  it('Возвращает начальное состояние', () => {
     expect(feedSlice(undefined, { type: 'unknown' })).toEqual(initialState);
   });
 
   describe('feedThunk', () => {
-    it('should handle pending', () => {
+    it('Обрабатывает состояние pending', () => {
       const action = { type: feedThunk.pending.type };
       const state = feedSlice(initialState, action);
       expect(state).toEqual({
@@ -59,7 +59,7 @@ describe('feed slice', () => {
       });
     });
 
-    it('should handle fulfilled', () => {
+    it('Обрабатывает состояние fulfilled', () => {
       const action = {
         type: feedThunk.fulfilled.type,
         payload: mockApiResponse
@@ -72,7 +72,7 @@ describe('feed slice', () => {
       });
     });
 
-    it('should handle rejected', () => {
+    it('Обрабатывает состояние rejected', () => {
       const error = { message: 'Request failed' };
       const action = { type: feedThunk.rejected.type, error };
       const state = feedSlice(initialState, action);
@@ -83,7 +83,7 @@ describe('feed slice', () => {
       });
     });
 
-    it('should fetch feeds successfully', async () => {
+    it('Успешная загрузка данных о ленте заказов', async () => {
       mockedGetFeedsApi.mockResolvedValue(mockApiResponse);
 
       const store = configureStore({
@@ -100,7 +100,7 @@ describe('feed slice', () => {
       expect(state.error).toBeNull();
     });
 
-    it('should handle fetch feeds error', async () => {
+    it('Обрабатывает ошибку при загрузке данных о ленте заказов', async () => {
       const errorMessage = 'Network Error';
       mockedGetFeedsApi.mockRejectedValue(new Error(errorMessage));
 
@@ -119,7 +119,7 @@ describe('feed slice', () => {
     });
   });
 
-  describe('selectors', () => {
+  describe('Селекторы', () => {
     const mockRootState = {
       feed: {
         items: mockApiResponse,
@@ -144,20 +144,20 @@ describe('feed slice', () => {
       user: {} as any
     };
 
-    it('should select feed items', () => {
+    it('Выбирает элементы ленты заказов', () => {
       expect(selectFeed(mockRootState)).toEqual(mockApiResponse);
     });
 
-    it('should select loading state', () => {
+    it('Выбирает состояние загрузки', () => {
       expect(selectLoading(mockRootState)).toBe(false);
     });
 
-    it('should select error state', () => {
+    it('Выбирает состояние ошибки', () => {
       expect(selectError(mockRootState)).toBeNull();
       expect(selectError(mockErrorRootState)).toEqual({ message: 'Error' });
     });
 
-    it('should select orders', () => {
+    it('Выбирает заказы', () => {
       expect(selectOrders(mockRootState)).toEqual(mockApiResponse.orders);
       expect(
         selectOrders({

@@ -21,11 +21,17 @@ jest.mock('@api', () => ({
   getOrdersApi: jest.fn()
 }));
 
-const mockedOrderBurgerApi = orderBurgerApi as jest.MockedFunction<typeof orderBurgerApi>;
-const mockedGetOrderByNumberApi = getOrderByNumberApi as jest.MockedFunction<typeof getOrderByNumberApi>;
-const mockedGetOrdersApi = getOrdersApi as jest.MockedFunction<typeof getOrdersApi>;
+const mockedOrderBurgerApi = orderBurgerApi as jest.MockedFunction<
+  typeof orderBurgerApi
+>;
+const mockedGetOrderByNumberApi = getOrderByNumberApi as jest.MockedFunction<
+  typeof getOrderByNumberApi
+>;
+const mockedGetOrdersApi = getOrdersApi as jest.MockedFunction<
+  typeof getOrdersApi
+>;
 
-describe('order slice', () => {
+describe('Слайс заказов', () => {
   const mockOrder: TOrder = {
     _id: '1',
     ingredients: ['ing1', 'ing2'],
@@ -49,17 +55,11 @@ describe('order slice', () => {
     }
   ];
 
-  const mockApiResponse = {
-    success: true,
-    orders: [mockOrder],
-    name: 'Order 1'
-  };
-
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should handle initial state', () => {
+  it('Возвращение начального состояния', () => {
     expect(orderSlice(undefined, { type: 'unknown' })).toEqual({
       order: [],
       orderRequest: false,
@@ -70,8 +70,8 @@ describe('order slice', () => {
     });
   });
 
-  describe('actions', () => {
-    it('should handle closeOrderModalData', () => {
+  describe('Действия', () => {
+    it('Обрабатывает закрытие модального окна заказа', () => {
       const initialStateWithModal: IOrderState = {
         ...initialState,
         orderModalData: mockOrder,
@@ -86,15 +86,15 @@ describe('order slice', () => {
     });
   });
 
-  describe('async thunks', () => {
+  describe('Асинхронные операции', () => {
     describe('createOrder', () => {
-      it('should handle pending', () => {
+      it('Обрабатывает состояние pending', () => {
         const action = { type: createOrder.pending.type };
         const state = orderSlice(initialState, action);
         expect(state.orderRequest).toBe(true);
       });
 
-      it('should handle fulfilled', () => {
+      it('Обрабатывает состояние fulfilled', () => {
         const action = {
           type: createOrder.fulfilled.type,
           payload: { order: mockOrder, name: 'Order 1' }
@@ -104,13 +104,13 @@ describe('order slice', () => {
         expect(state.orderModalData).toEqual(mockOrder);
       });
 
-      it('should handle rejected', () => {
+      it('Обрабатывает состояние rejected', () => {
         const action = { type: createOrder.rejected.type };
         const state = orderSlice(initialState, action);
         expect(state.orderRequest).toBe(false);
       });
 
-      it('should create order successfully', async () => {
+      it('Успешное создание заказа', async () => {
         mockedOrderBurgerApi.mockResolvedValue({
           success: true,
           name: 'Order 1',
@@ -132,13 +132,13 @@ describe('order slice', () => {
     });
 
     describe('fetchOrderNumber', () => {
-      it('should handle pending', () => {
+      it('Обрабатывает состояние pending', () => {
         const action = { type: fetchOrderNumber.pending.type };
         const state = orderSlice(initialState, action);
         expect(state.isLoadingNumber).toBe(true);
       });
 
-      it('should handle fulfilled', () => {
+      it('Обрабатывает состояние fulfilled', () => {
         const action = {
           type: fetchOrderNumber.fulfilled.type,
           payload: mockOrder
@@ -148,13 +148,13 @@ describe('order slice', () => {
         expect(state.orderModalData).toEqual(mockOrder);
       });
 
-      it('should handle rejected', () => {
+      it('Обрабатывает состояние rejected', () => {
         const action = { type: fetchOrderNumber.rejected.type };
         const state = orderSlice(initialState, action);
         expect(state.isLoadingNumber).toBe(false);
       });
 
-      it('should fetch order by number successfully', async () => {
+      it('Успешное получение заказа по номеру', async () => {
         mockedGetOrderByNumberApi.mockResolvedValue({
           success: true,
           orders: [mockOrder]
@@ -175,14 +175,14 @@ describe('order slice', () => {
     });
 
     describe('fetchOrder', () => {
-      it('should handle pending', () => {
+      it('Обрабатывает состояние pending', () => {
         const action = { type: fetchOrder.pending.type };
         const state = orderSlice(initialState, action);
         expect(state.isLoadingOrder).toBe(true);
         expect(state.orderError).toBeNull();
       });
 
-      it('should handle fulfilled', () => {
+      it('Обрабатывает состояние fulfilled', () => {
         const action = {
           type: fetchOrder.fulfilled.type,
           payload: mockOrders
@@ -193,7 +193,7 @@ describe('order slice', () => {
         expect(state.order).toEqual(mockOrders);
       });
 
-      it('should handle rejected', () => {
+      it('Обрабатывает состояние rejected', () => {
         const error = { message: 'Request failed' };
         const action = {
           type: fetchOrder.rejected.type,
@@ -204,7 +204,7 @@ describe('order slice', () => {
         expect(state.orderError).toEqual(error);
       });
 
-      it('should fetch orders successfully', async () => {
+      it('Успешно получает список заказов', async () => {
         mockedGetOrdersApi.mockResolvedValue(mockOrders);
 
         const store = configureStore({
@@ -222,7 +222,7 @@ describe('order slice', () => {
     });
   });
 
-  describe('selectors', () => {
+  describe('Селекторы', () => {
     const mockRootState = {
       order: {
         order: mockOrders,
@@ -242,51 +242,56 @@ describe('order slice', () => {
         loading: false,
         error: null
       },
-      // Другие слайсы, если они нужны для RootState
       builder: {} as any,
       ingredients: {} as any,
       user: {} as any
     };
 
-    it('should select all orders', () => {
+    it('Выбирает все заказы', () => {
       expect(selectOrders(mockRootState)).toEqual(mockOrders);
     });
 
-    it('should select order request status', () => {
+    it('Выбирает статус запроса заказа', () => {
       expect(selectOrderRequest(mockRootState)).toBe(false);
     });
 
-    it('should select order modal data', () => {
+    it('Выбирает данные модального окна заказа', () => {
       expect(selectOrderModalData(mockRootState)).toEqual(mockOrder);
     });
 
     describe('orderDataSelector', () => {
-      it('should find order in order slice', () => {
+      it('Находит заказ в слайсе заказов', () => {
         const selector = orderDataSelector('1');
         expect(selector(mockRootState)).toEqual(mockOrder);
       });
 
-      it('should find order in feed slice', () => {
+      it('Находит заказ в слайсе ленты заказов', () => {
         const selector = orderDataSelector('2');
         expect(selector(mockRootState)).toEqual(mockOrders[1]);
       });
 
-      it('should return modal data if no order found', () => {
+      it('Возвращает данные модального окна, если заказ не найден', () => {
         const selector = orderDataSelector('3');
         const state = {
           ...mockRootState,
           order: { ...mockRootState.order, order: [] },
-          feed: { ...mockRootState.feed, items: { ...mockRootState.feed.items, orders: [] } }
+          feed: {
+            ...mockRootState.feed,
+            items: { ...mockRootState.feed.items, orders: [] }
+          }
         };
         expect(selector(state)).toEqual(mockOrder);
       });
 
-      it('should return null if no data found', () => {
+      it('Возвращает null, если данные не найдены', () => {
         const selector = orderDataSelector('999');
         const state = {
           ...mockRootState,
           order: { ...mockRootState.order, order: [], orderModalData: null },
-          feed: { ...mockRootState.feed, items: { ...mockRootState.feed.items, orders: [] } }
+          feed: {
+            ...mockRootState.feed,
+            items: { ...mockRootState.feed.items, orders: [] }
+          }
         };
         expect(selector(state)).toBeNull();
       });
